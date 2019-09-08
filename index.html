@@ -1,111 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+	<meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.524.0.min.js"></script>
+    <link rel="apple-touch-icon" href="img/logo.ico">
+    <link rel="shortcut icon" href="img/logo.ico" type="icon">
+	<title>CriptoBank</title>    
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/all.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Reto Experiencia biometrica</title>
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-database.js"></script>
+    <style type="text/css">
+        .log-in-form {
+            border: 1px solid #cacaca;
+            padding: 1rem;
+            align-self: center;
+            border-radius: 0;            
+        }    
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #3371FF">
-        <a class="navbar-brand" href="#">Hack</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>              
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
-                </li>  
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#IniciaSesion"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
-                </li> 
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#Registro"><i class="fas fa-user"></i> Registrarse</a>
-                </li>          
-            </ul>        
-        </div>
-    </nav>
-    <div class="container">
-        <div class="jumbotron">    
-            <div class="row">
-                <h2>Bienvenido</h2>
+<body>    
+    <div class="row align-center" id="formulario">
+        <form class="log-in-form">
+            <center>
+                <img src="img/logo.ico" alt="" width="140" height="140" class="img-circle">
+            </center>
+            <h4 class="text-center">Inicia Sesión con tu correo electronico</h4>  
+            <div class="grid-margin-x grid-x">  
+                <div class="cell medium-6 large-4 large-offset-2">        
+                    <label><i class="far fa-envelope"></i> Correo<input id="txtEmail" type="email" placeholder="correo@ejemplo.com"></label> 
+                </div>
+                <div class="cell medium-6 large-4">           
+                    <label><i class="fas fa-key"></i> Contraseña<input id="txtPassword" type="password" placeholder="Contraseña"></label>
+                </div>                            
             </div>
-            <div class="row">
-                  <div class="col">
-                      <button class="btn"></button>
-                  </div>  
+            <div class="grid-margin-x grid-x">  
+                <div class="cell medium-6 large-4 large-offset-5">
+                    <input id="show-pass" type="checkbox"><label for="show-password">Mostrar Contraseña</label>
+                </div>                            
+            </div>
+            <div class="show-for-small-only">
+                    <div class="cell small-4">
+                        <button type="button" class="button expanded" id="IniciaSe">Iniciar Sesión</button>
+                    </div>                               
+                </div>
+            <div class="grid-x grid-margin-x large-offset-4 hide-for-small-only">
+                <div class="cell small-6">
+                    <button type="button" class="button expanded" id="IniciaSe">Iniciar Sesión</button>
+                </div>                               
+            </div>
+            <p class="text-center"><a href="#" data-open="ModalRec">Olvidaste tu contraseña?</a></p>
+            <p class="text-center">Aun no eres miembro?<a href="#" data-open="ModalNewUs"> Registrate con nosotros</a></p>                        
+        </form>        
+    </div>
+    <div class="loader hide" id="load">Loading...</div>
+    <div class="reveal" id="ModalNewUs" data-reveal>
+        <h1>Registrate con CriptoBank</h1>
+        <div class="grid-x grid-margin-x">
+            <div class="cell large-auto">
+                <label><i class="fas fa-user"></i> Nombre<input id="txtNomreg" type="text" placeholder="Nombre" minlength="3" pattern="[a-z]" required></label>                
+            </div>
+            <div class="cell large-auto">
+                <label>Apellido Paterno<input id="txtApPatreg" type="text" placeholder="Apellido Paterno" minlength="3" pattern="[a-z]" required></label>
+            </div>
+            <div class="cell large-auto">
+                <label>Apellido Materno<input id="txtApMatreg" type="text" placeholder="Apellido Materno" minlength="3" pattern="[a-z]" required></label>
             </div>            
         </div>
+        <div class="grid-x grid-margin-x"> 
+            <div class="cell large-auto">
+                <label><i class="fas fa-mobile-alt"></i> Teléfono<input id="txtTelreg" type="tel" placeholder="Teléfono a 10 dígitos" pattern="[0-9]{10}" required></label>               
+            </div>     
+            <div class="cell large-auto">
+                <label><i class="far fa-envelope"></i> Correo<input id="txtEmailreg" type="email" placeholder="correo@ejemplo.com"></label>
+            </div>
+        </div> 
+        <div class="grid-x">            
+            <div class="cell large-auto">
+                <label><i class="fas fa-key"></i> Contraseña<input id="txtPasswordreg" type="password" placeholder="Contraseña"></label>  
+            </div>             
+        </div>          
+        <input id="show-passreg" type="checkbox"><label for="show-password">Mostrar Contraseña</label>
+        <div class="cell small-6"><button type="button" class="button expanded" id="CreaUs">Crear Usuario</button></div>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    
-    <!-- Modal -->
-<div class="modal fade" id="Registro" tabindex="-1" role="dialog" aria-labelledby="Registro" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="Registro">Registro</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                            <input type="file" accept="image/*" capture>
-                        <label for="exampleInputEmail1">Correo</label>
-                        <input type="email" class="form-control" id="Correo" aria-describedby="emailHelp" placeholder="Ingresa tu correo">
-                        <small id="emailHelp" class="form-text text-muted">Nunca compartiremos tu correo con nadie mas.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Contraseña</label>
-                        <input type="password" class="form-control" id="Contrasena" placeholder="Ingrese su contraseña">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Confirme su contraseña</label>
-                        <input type="password" class="form-control" id="ConfContrasena" placeholder="Confirme su contraseña">
-                    </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Registrarse</button>
-            </div>
-                </form>
-          </div>
-        </div>
-      </div>
-    <!-- Modal -->
-<div class="modal fade" id="IniciaSesion" tabindex="-1" role="dialog" aria-labelledby="IniciaSesion" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="IniciaSesion">Inicia Sesión</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Correo</label>
-                        <input type="email" class="form-control" id="Correo" aria-describedby="emailHelp" placeholder="Ingresa tu correo">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Contraseña</label>
-                        <input type="password" class="form-control" id="Contrasena" placeholder="Ingrese su contraseña">
-                    </div>                
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Iniciar Sesión</button>
-            </div>
-                </form>
-          </div>
-        </div>
-      </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>    
+    <div class="reveal" id="ModalRec" data-reveal>
+        <h1>Recuperar contraseña</h1>
+        <label><i class="far fa-envelope"></i> Correo<input id="txtEmailrec" type="email" placeholder="correo@ejemplo.com"></label>
+        <div class="cell small-6"><button type="button" class="button expanded" id="Reset">Recuperar Contraseña</button></div>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/1.9.4/bowser.min.js"></script>
+<script src="js/vendor/jquery.js"></script>
+<script src="js/vendor/what-input.js"></script>
+<script src="js/vendor/foundation.js"></script>
+<script src="js/app.js"></script>
+<script src="js/log.js"></script>
+<script src="sw.js"></script>
 </body>
 </html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" href="img/logo.ico">
+    <link rel="shortcut icon" href="img/logo.ico" type="icon">
+	<title>CriptoBank</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">  
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase-database.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AfbCnDxVNhbdmve5F42l_oRjpUc566helgYaP4i0XE3yCpnUBZmXaE2vM0VbN10xE0J3nzYeimg0er6_&currency=MXN"></script>    
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#"><i class="fas fa-user-shield"></i> CriptoBank</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href="#" id="Inicio"><i class="fas fa-home"></i> Inicio</a>
+          <a class="nav-item nav-link" href="#" id="Transac"><i class="fas fa-money-bill-wave"></i> Transacción</a>
+          <a class="nav-item nav-link" href="#" id="State"><i class="fas fa-money-check"></i> Estado de Cuenta</a>
+          <a class="nav-item nav-link" href="#" id="Move"><i class="fas fa-money-check-alt"></i> Mis movimientos</a>
+          <a class="nav-item nav-link" href="#" id="Soporte"><i class="fas fa-headset"></i> Chat</a>                    
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarUser" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#" id="Change"><i class="fas fa-unlock"></i> Cambiar Contraseña</a>
+                <a class="dropdown-item" href="#" id="Close"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>             
+              <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-open="ModalDel"><i class="fas fa-user-times"></i> Eliminar Cuenta</a>
+          </li>
+        </div>
+        </div>
+      </div>
+    </nav>
+<div class="container">
+    <div class="jumbotron" id="bienvenido">
+        <p id="titulo"></p>
+        <p><button type="button" class="button hide" id="veruser">Reenviar Correo de Verificación</button></p>        
+    </div>           
+     <div class="jumbotron hide" id="Transacdiv">
+        <div class="grid-container">
+            <div class="grid-x grid-margin-x">                  
+                <div class="cell">
+                    <h2>Transacción</h2>             
+                </div>
+                <div class="medium-6 cell large-auto">
+                    <label>Clave Usuario
+                        <input type="text" placeholder="ID de Usuario" id="UserTransf">
+                    </label>
+                </div>
+                <div class="cell large-auto">
+                    <label>Nombre del Banco
+                        <select disabled>
+                          <option value="CriptoBank">CriptoBank</option>
+                          <option value="BBVA">BBVA</option>
+                          <option value="Santander">Santander</option>
+                          <option value="Citybanamex">Citibanamex</option>                     
+                        </select>
+                    </label>
+                </div>
+                <div class="cell large-auto">
+                    <label>Monto de Transacción
+                    <div class="input-group plus-minus-input">
+                            <div class="input-group-button">
+                            <button type="button" class="button hollow circle" id="menos" data-quantity="minus" data-field="quantity">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                            </div>
+                            <input class="input-group-field" type="number" name="Monto" value="0" id="Monto">
+                            <div class="input-group-button">
+                            <button type="button" class="button hollow circle" id="mas" data-quantity="plus" data-field="quantity">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <div class="cell large-auto">                    
+                    <button button=type class="button expanded" id="Transferir">Transferir</button> 
+                </div>
+            </div>
+        </div>  
+        <div class="container" id="dep">
+            <div class="grid-x grid-padding-x">           
+                <div class="cell">
+                    <h2>Deposito</h2>            
+                </div>
+                <div class="cell large-4">
+                    <label>Monto de Deposito
+                        <input disabled type="number" placeholder="Deposito" id="Deposito" value="100">
+                    </label>            
+                </div>
+                <div class="cell large-4" id="paypal"></div>
+            </div>
+        </div>
+                           
+    </div>
+    <div class="jumbotron hide" id="Movediv">
+        <div class="grid-container">
+            <div class="grid-x grid-margin-x">
+                <div class="cell">
+                    <h2>Mis movimientos</h2>
+                </div>
+                <div class="cell large-auto">
+                    <table class="hover stack">
+                        <thead>
+                            <tr>
+                                <td>Banco</td> 
+                                <td>Beneficiario</td>
+                                <td>Fecha</td>
+                                <td>Hora</td>
+                                <td>Monto</td>                               
+                            </tr>
+                        </thead>
+                        <tbody id="Movimientos"></tbody>
+                    </table>
+                </div>                                           
+            </div>            
+        </div>                  
+    </div>
+    <div class="jumbotron hide" id="Statediv">
+        <div class="grid-container">       
+        <div class="cell">
+            <h2>Estado de Cuenta</h2>            
+        </div>        
+        <div class="grid-y grid-margin-x">
+            <div class="grid-x">
+                <div class="cell large-3">
+                    <table id="name"></table>                  
+                </div>                               
+            </div>
+            <div class="grid-x">
+                <div class="cell large-auto">
+                    <table id="cuenta"></table>                   
+                </div> 
+                <div class="cell large-auto"></div>               
+            </div>
+            <div class="grid-x">
+                <div class="cell large-auto">
+                    <table id="email"></table>                    
+                </div>                
+            </div>
+            <div class="grid-x">
+                <div class="cell large-auto">
+                    <table id="tel"></table>                    
+                </div>                
+            </div>
+            <div class="grid-x">
+                <div class="cell large-auto">
+                    <table id="sal"></table>                    
+                </div>                
+            </div>            
+        </div>         
+    </div>
+    </div> 
+    <div class="hide" id="Chat">                           
+        <div class="row">               
+                <div class="jumbotron">
+                    <h3 class=" text-center">Atención a Clientes</h3>
+                    <div class="msg_history">
+                        <div class="incoming_msg">
+                            <div class="incoming_msg_img"> <img src="img/user-profile.png" alt="sunil"></div>
+                            <div class="received_msg">
+                                <div class="received_withd_msg">
+                                    <p>Buenos Días Usuario ¿En que podemos ayudarle?</p>
+                                    <span class="time_date" id="Horac"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="outgoing_msg hide" id="RespuestaMe">
+                                <div class="sent_msg">
+                                  <p id="Respuesta"></p>
+                                  <span class="time_date" id="Horaenv"></span> </div>
+                            </div>  
+                            <div class="incoming_msg hide" id="Resp">
+                                <div class="incoming_msg_img"> <img src="img/user-profile.png" alt="sunil"></div>
+                                <div class="received_msg">
+                                    <div class="received_withd_msg">
+                                        <p>Fue un gusto poder ayudarte que tengas un Buen día</p>
+                                        <span class="time_date" id="Horaresp"></span>
+                                    </div>
+                                </div>
+                            </div>                                  
+                    </div>
+                    <div class="type_msg">
+                        <div class="input_msg_write">
+                            <input type="text" id="texto" class="write_msg" placeholder="Escribe un mensaje" />
+                            <button class="msg_send_btn" type="button" id="Send"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>            
+    </div>  
+</div>
+    <div class="reveal" id="ModalDel" data-reveal>
+        <h1>Eliminar Cuenta</h1>
+        <p>Para borrar tu cuenta escribe tu contrasaña y presiona el botón</p>     
+        <input id="txtPassword" type="password" placeholder="Contraseña">  
+        <div class="cell small-6">
+            <button type="button" class="button alert expanded" id="Delete"><i class="fas fa-exclamation-triangle"></i>Eliminar Cuenta</button>
+        </div>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="reveal" id="Estado" data-reveal>                
+        <p class="panel">        
+        </p>    
+        <button button=type class="button expanded">Imprimir</button>
+        <button class="close-button" data-close aria-label="Close Accessible Modal" type="button">
+        <span aria-hidden="true">&times;</span>    
+    </div>
+    <div class="reveal" id="Movimientos" data-reveal>
+        
+    <button class="close-button" data-close aria-label="Close Accessible Modal" type="button">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="js/vendor/what-input.js"></script>
+<script src="js/vendor/foundation.js"></script>
+<script src="js/app.js"></script>
+<script src="js/gobd.js"></script>
+</body>
+</html>
